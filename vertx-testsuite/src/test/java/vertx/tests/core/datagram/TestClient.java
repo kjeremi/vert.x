@@ -379,7 +379,7 @@ public class TestClient extends TestClientBase {
 
   public void testMulticastJoinLeave() throws Exception {
     final Buffer buffer = TestUtils.generateRandomBuffer(128);
-    final InetAddress groupAddress = InetAddress.getByName("230.0.0.1");
+    final String groupAddress = "230.0.0.1";
 
     peer1 = vertx.createDatagramClient();
     final DatagramClient peer1 = (DatagramClient) this.peer1;
@@ -404,7 +404,7 @@ public class TestClient extends TestClientBase {
           @Override
           public void handle(AsyncResult<DatagramServer> event) {
             tu.azzert(event.succeeded());
-            peer1.send(buffer, groupAddress.getHostAddress(), 1234, new AsyncResultHandler<DatagramClient>() {
+            peer1.send(buffer, groupAddress, 1234, new AsyncResultHandler<DatagramClient>() {
               @Override
               public void handle(AsyncResult<DatagramClient> event) {
                 tu.azzert(event.succeeded());
@@ -423,7 +423,7 @@ public class TestClient extends TestClientBase {
                         received.set(true);
                       }
                     });
-                    peer1.send(buffer, groupAddress.getHostAddress(), 1234, new AsyncResultHandler<DatagramClient>() {
+                    peer1.send(buffer, groupAddress, 1234, new AsyncResultHandler<DatagramClient>() {
                       @Override
                       public void handle(AsyncResult<DatagramClient> event) {
                         tu.azzert(event.succeeded());

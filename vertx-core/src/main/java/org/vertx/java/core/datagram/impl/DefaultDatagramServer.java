@@ -20,17 +20,16 @@ import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.datagram.DatagramPacket;
 import org.vertx.java.core.datagram.DatagramServer;
+import org.vertx.java.core.impl.DefaultFutureResult;
 import org.vertx.java.core.impl.VertxInternal;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.StandardProtocolFamily;
+import java.net.*;
 
 /**
  * @author <a href="mailto:nmaurer@redhat.com">Norman Maurer</a>
  */
 public class DefaultDatagramServer extends AbstractDatagramSupport<DatagramServer> implements DatagramServer {
+
   private Handler<DatagramPacket> dataHandler;
   public DefaultDatagramServer(VertxInternal vertx, StandardProtocolFamily family) {
     super(vertx, family);
@@ -38,44 +37,68 @@ public class DefaultDatagramServer extends AbstractDatagramSupport<DatagramServe
   }
 
   @Override
-  public DatagramServer listenMulticast(InetAddress multicastAddress, Handler<AsyncResult<DatagramServer>> handler) {
+  public DatagramServer listenMulticast(String multicastAddress, Handler<AsyncResult<DatagramServer>> handler) {
     configurable = false;
-    addListener(channel().joinGroup(multicastAddress), handler);
+    try {
+      addListener(channel().joinGroup(InetAddress.getByName(multicastAddress)), handler);
+    } catch (UnknownHostException e) {
+      notifyException(handler, e);
+    }
     return this;
   }
 
   @Override
-  public DatagramServer listenMulticast(InetAddress multicastAddress, NetworkInterface networkInterface, InetAddress source, Handler<AsyncResult<DatagramServer>> handler) {
+  public DatagramServer listenMulticast(String multicastAddress, NetworkInterface networkInterface, String source, Handler<AsyncResult<DatagramServer>> handler) {
     configurable = false;
-    addListener(channel().joinGroup(multicastAddress, networkInterface, source), handler);
+    try {
+      addListener(channel().joinGroup(InetAddress.getByName(multicastAddress), networkInterface, InetAddress.getByName(source)), handler);
+    } catch (UnknownHostException e) {
+      notifyException(handler, e);
+    }
     return this;
   }
 
   @Override
-  public DatagramServer unlistenMulticast(InetAddress multicastAddress, Handler<AsyncResult<DatagramServer>> handler) {
+  public DatagramServer unlistenMulticast(String multicastAddress, Handler<AsyncResult<DatagramServer>> handler) {
     configurable = false;
-    addListener(channel().leaveGroup(multicastAddress), handler);
+    try {
+      addListener(channel().leaveGroup(InetAddress.getByName(multicastAddress)), handler);
+    } catch (UnknownHostException e) {
+      notifyException(handler, e);
+    }
     return this;
   }
 
   @Override
-  public DatagramServer unlistenMulticast(InetAddress multicastAddress, NetworkInterface networkInterface, InetAddress source, Handler<AsyncResult<DatagramServer>> handler) {
+  public DatagramServer unlistenMulticast(String multicastAddress, NetworkInterface networkInterface, String source, Handler<AsyncResult<DatagramServer>> handler) {
     configurable = false;
-    addListener(channel().leaveGroup(multicastAddress, networkInterface, source), handler);
+    try {
+      addListener(channel().leaveGroup(InetAddress.getByName(multicastAddress), networkInterface, InetAddress.getByName(source)), handler);
+    } catch (UnknownHostException e) {
+      notifyException(handler, e);
+    }
     return this;
   }
 
   @Override
-  public DatagramServer blockMulticast(InetAddress multicastAddress, NetworkInterface networkInterface, InetAddress sourceToBlock, Handler<AsyncResult<DatagramServer>> handler) {
+  public DatagramServer blockMulticast(String multicastAddress, NetworkInterface networkInterface, String sourceToBlock, Handler<AsyncResult<DatagramServer>> handler) {
     configurable = false;
-    addListener(channel().block(multicastAddress, networkInterface, sourceToBlock), handler);
+    try {
+      addListener(channel().block(InetAddress.getByName(multicastAddress), networkInterface, InetAddress.getByName(sourceToBlock)), handler);
+    } catch (UnknownHostException e) {
+      notifyException(handler, e);
+    }
     return  this;
   }
 
   @Override
-  public DatagramServer blockMulticast(InetAddress multicastAddress, InetAddress sourceToBlock, Handler<AsyncResult<DatagramServer>> handler) {
+  public DatagramServer blockMulticast(String multicastAddress, String sourceToBlock, Handler<AsyncResult<DatagramServer>> handler) {
     configurable = false;
-    addListener(channel().block(multicastAddress, sourceToBlock), handler);
+    try {
+      addListener(channel().block(InetAddress.getByName(multicastAddress), InetAddress.getByName(sourceToBlock)), handler);
+    } catch (UnknownHostException e) {
+      notifyException(handler, e);
+    }
     return this;
   }
 
@@ -116,4 +139,22 @@ public class DefaultDatagramServer extends AbstractDatagramSupport<DatagramServe
     exceptionHandler = handler;
     return this;
   }
+
+  private void notifyException(final Handler<AsyncResult<DatagramServer>> handler, final Throwable cause) {
+    if (context.isOnCorrectWorker(channel().eventLoop())) {
+      try {
+        vertx.setContext(context);
+        handler.handle(new DefaultFutureResult<DatagramServer>(cause));
+      } catch (Throwable t) {
+        context.reportException(t);
+      }
+    } else {
+      context.execute(new Runnable() {
+        public void run() {
+          handler.handle(new DefaultFutureResult<DatagramServer>(cause));
+        }
+      });
+    }
+  }
+
 }
