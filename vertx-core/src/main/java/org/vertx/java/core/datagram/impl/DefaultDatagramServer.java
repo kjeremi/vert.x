@@ -38,42 +38,42 @@ public class DefaultDatagramServer extends AbstractDatagramSupport<DatagramServe
   }
 
   @Override
-  public DatagramServer joinGroup(InetAddress multicastAddress, Handler<AsyncResult<DatagramServer>> handler) {
+  public DatagramServer listenMulticast(InetAddress multicastAddress, Handler<AsyncResult<DatagramServer>> handler) {
     configurable = false;
     addListener(channel().joinGroup(multicastAddress), handler);
     return this;
   }
 
   @Override
-  public DatagramServer joinGroup(InetAddress multicastAddress, NetworkInterface networkInterface, InetAddress source, Handler<AsyncResult<DatagramServer>> handler) {
+  public DatagramServer listenMulticast(InetAddress multicastAddress, NetworkInterface networkInterface, InetAddress source, Handler<AsyncResult<DatagramServer>> handler) {
     configurable = false;
     addListener(channel().joinGroup(multicastAddress, networkInterface, source), handler);
     return this;
   }
 
   @Override
-  public DatagramServer leaveGroup(InetAddress multicastAddress, Handler<AsyncResult<DatagramServer>> handler) {
+  public DatagramServer unlistenMulticast(InetAddress multicastAddress, Handler<AsyncResult<DatagramServer>> handler) {
     configurable = false;
     addListener(channel().leaveGroup(multicastAddress), handler);
     return this;
   }
 
   @Override
-  public DatagramServer leaveGroup(InetAddress multicastAddress, NetworkInterface networkInterface, InetAddress source, Handler<AsyncResult<DatagramServer>> handler) {
+  public DatagramServer unlistenMulticast(InetAddress multicastAddress, NetworkInterface networkInterface, InetAddress source, Handler<AsyncResult<DatagramServer>> handler) {
     configurable = false;
     addListener(channel().leaveGroup(multicastAddress, networkInterface, source), handler);
     return this;
   }
 
   @Override
-  public DatagramServer block(InetAddress multicastAddress, NetworkInterface networkInterface, InetAddress sourceToBlock, Handler<AsyncResult<DatagramServer>> handler) {
+  public DatagramServer blockMulticast(InetAddress multicastAddress, NetworkInterface networkInterface, InetAddress sourceToBlock, Handler<AsyncResult<DatagramServer>> handler) {
     configurable = false;
     addListener(channel().block(multicastAddress, networkInterface, sourceToBlock), handler);
     return  this;
   }
 
   @Override
-  public DatagramServer block(InetAddress multicastAddress, InetAddress sourceToBlock, Handler<AsyncResult<DatagramServer>> handler) {
+  public DatagramServer blockMulticast(InetAddress multicastAddress, InetAddress sourceToBlock, Handler<AsyncResult<DatagramServer>> handler) {
     configurable = false;
     addListener(channel().block(multicastAddress, sourceToBlock), handler);
     return this;

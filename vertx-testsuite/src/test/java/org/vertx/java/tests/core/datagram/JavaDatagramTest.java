@@ -111,16 +111,4 @@ public class JavaDatagramTest extends TestBase {
   public void testMulticastJoinLeave() throws Exception {
     startTest(getMethodName());
   }
-
-  /**
-   * Not support on OSX.. Need to check on which OS it works.
-   *
-   * java.lang.UnsupportedOperationException
-   * at sun.nio.ch.DatagramChannelImpl.block(DatagramChannelImpl.java:941)
-   * at sun.nio.ch.MembershipKeyImpl.block(MembershipKeyImpl.java:183)
-  @Test
-  public void testMulticastJoinBlock() throws Exception {
-    startTest(getMethodName());
-  }
-  */
 }

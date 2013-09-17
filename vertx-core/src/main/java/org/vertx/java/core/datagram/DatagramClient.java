@@ -16,7 +16,8 @@
 package org.vertx.java.core.datagram;
 
 /**
- * A Datagram client which can be used for send messages
+ * A Datagram client which can be used to send {@link DatagramPacket}'s to remote Datagram servers.
+ *
  */
 public interface DatagramClient extends DatagramSupport<DatagramClient> {
 }

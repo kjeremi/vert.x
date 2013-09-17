@@ -27,7 +27,7 @@ import java.net.InetSocketAddress;
 public interface DatagramPacket {
 
   /**
-   * Returns the {@link InetSocketAddress} of the sender
+   * Returns the {@link InetSocketAddress} of the sender that send this {@link DatagramPacket}.
    */
   InetSocketAddress sender();
 

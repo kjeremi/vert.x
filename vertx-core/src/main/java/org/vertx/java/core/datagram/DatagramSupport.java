@@ -27,6 +27,8 @@ import java.net.NetworkInterface;
 
 
 /**
+ * Implementations of this interface provide Datagram support.
+ *
  * @author <a href="mailto:nmaurer@redhat.com">Norman Maurer</a>
  */
 public interface DatagramSupport<T extends DatagramSupport> extends DrainSupport<T>, NetworkSupport<T> {
@@ -127,6 +129,13 @@ public interface DatagramSupport<T extends DatagramSupport> extends DrainSupport
   T setNetworkInterface(NetworkInterface networkInterface);
 
 
+  /**
+   * Close the {@link DatagramSupport} implementation asynchronous and notifies the handler once done.
+   */
   void close(Handler<AsyncResult<Void>> handler);
+
+  /**
+   * Close the {@link DatagramSupport} implementation asynchronous.
+   */
   void close();
 }
