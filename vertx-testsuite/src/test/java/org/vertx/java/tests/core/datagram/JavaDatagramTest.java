@@ -108,6 +108,11 @@ public class JavaDatagramTest extends TestBase {
   }
 
   @Test
+  public void testConfigure() throws Exception {
+    startTest(getMethodName());
+  }
+
+  @Test
   public void testMulticastJoinLeave() throws Exception {
     startTest(getMethodName());
   }

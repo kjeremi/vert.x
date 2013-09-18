@@ -307,6 +307,41 @@ public class TestClient extends TestClientBase {
     checkConfigure(peer2);
   }
 
+  public void testConfigure() throws Exception {
+    peer2 = vertx.createDatagramServer(null);
+
+    tu.azzert(!peer2.isBroadcast());
+    peer2.setBroadcast(true);
+    tu.azzert(peer2.isBroadcast());
+
+    tu.azzert(peer2.isLoopbackModeDisabled());
+    peer2.setLoopbackModeDisabled(false);
+    tu.azzert(!peer2.isLoopbackModeDisabled());
+
+    tu.azzert(peer2.getNetworkInterface() == null);
+    NetworkInterface iface = NetworkInterface.getNetworkInterfaces().nextElement();
+    peer2.setNetworkInterface(iface);
+    tu.azzert(peer2.getNetworkInterface().equals(iface));
+
+    tu.azzert(peer2.getReceiveBufferSize() != 1024);
+    peer2.setReceiveBufferSize(1024);
+    tu.azzert(peer2.getReceiveBufferSize() == 1024);
+
+    tu.azzert(peer2.getSendBufferSize() != 1024);
+    peer2.setSendBufferSize(1024);
+    tu.azzert(peer2.getSendBufferSize() == 1024);
+
+    tu.azzert(!peer2.isReuseAddress());
+    peer2.setReuseAddress(true);
+    tu.azzert(peer2.isReuseAddress());
+
+    tu.azzert(peer2.getTimeToLive() != 2);
+    peer2.setTimeToLive(2);
+    tu.azzert(peer2.getTimeToLive() == 2);
+
+    tu.testComplete();
+  }
+
   private void checkConfigure(DatagramSupport endpoint)  {
     try {
       endpoint.setBroadcast(true);
