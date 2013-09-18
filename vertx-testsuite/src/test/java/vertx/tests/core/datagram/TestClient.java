@@ -328,7 +328,7 @@ public class TestClient extends TestClientBase {
     tu.azzert(peer2.getReceiveBufferSize() == 1024);
 
     tu.azzert(peer2.getSendBufferSize() != 1024);
-    peer2.setSendBufferSize(1024);
+    peer2.setSendBufferSize(1024);                                                                                              p ,
     tu.azzert(peer2.getSendBufferSize() == 1024);
 
     tu.azzert(!peer2.isReuseAddress());

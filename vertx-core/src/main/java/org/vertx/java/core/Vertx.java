@@ -72,7 +72,11 @@ public interface Vertx {
   DatagramClient createDatagramClient();
 
   /**
-   * Create a new Datagram server
+   * Create a new Datagram server.
+   *
+   * @param family  use {@link StandardProtocolFamily} to use for multicast. If {@code null} is used it's up to the
+   *                operation system to detect it's default.
+   * @return server the created {@link DatagramServer}.
    */
   DatagramServer createDatagramServer(StandardProtocolFamily family);
 
