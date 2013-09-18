@@ -26,6 +26,8 @@ import java.net.InetSocketAddress;
 /**
  * A {@link DatagramServer} which can be used for write and receive datagram packets.
  *
+ *
+ *
  * @author <a href="mailto:nmaurer@redhat.com">Norman Maurer</a>
  */
 public interface DatagramServer extends DatagramSupport<DatagramServer>, ExceptionSupport<DatagramServer> {

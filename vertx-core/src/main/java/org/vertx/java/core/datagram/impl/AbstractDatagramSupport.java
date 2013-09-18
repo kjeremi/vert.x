@@ -26,7 +26,6 @@ import org.vertx.java.core.datagram.*;
 import org.vertx.java.core.impl.VertxInternal;
 import org.vertx.java.core.net.impl.ConnectionBase;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.StandardProtocolFamily;
@@ -211,20 +210,6 @@ abstract class AbstractDatagramSupport<T extends DatagramSupport> extends Connec
     checkConfigurable();
 
     channel().config().setTimeToLive(ttl);
-    return (T) this;
-  }
-
-  @Override
-  public InetAddress getInterface() {
-    return channel().config().getInterface();
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  public T setInterface(InetAddress interfaceAddress) {
-    checkConfigurable();
-
-    channel().config().setInterface(interfaceAddress);
     return (T) this;
   }
 

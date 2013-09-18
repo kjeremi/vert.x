@@ -316,15 +316,6 @@ public class TestClient extends TestClientBase {
     }
 
     try {
-      endpoint.setInterface(InetAddress.getLocalHost());
-      tu.azzert(false);
-    } catch (IllegalStateException e) {
-      // expected
-    } catch (UnknownHostException ex) {
-      // ignore
-    }
-
-    try {
       endpoint.setLoopbackModeDisabled(true);
       tu.azzert(false);
     } catch (IllegalStateException e) {

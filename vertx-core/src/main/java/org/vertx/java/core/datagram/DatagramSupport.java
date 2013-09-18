@@ -21,7 +21,6 @@ import org.vertx.java.core.NetworkSupport;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.streams.DrainSupport;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 
@@ -107,16 +106,6 @@ public interface DatagramSupport<T extends DatagramSupport> extends DrainSupport
    * Sets the {@link java.net.StandardSocketOptions#IP_MULTICAST_TTL} option.
    */
   T setTimeToLive(int ttl);
-
-  /**
-   * Gets the address of the network interface used for multicast packets.
-   */
-  InetAddress getInterface();
-
-  /**
-   * Sets the address of the network interface used for multicast packets.
-   */
-  T setInterface(InetAddress interfaceAddress);
 
   /**
    * Gets the {@link java.net.StandardSocketOptions#IP_MULTICAST_IF} option.

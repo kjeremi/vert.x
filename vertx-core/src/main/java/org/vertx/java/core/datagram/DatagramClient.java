@@ -18,6 +18,12 @@ package org.vertx.java.core.datagram;
 /**
  * A Datagram client which can be used to send {@link DatagramPacket}'s to remote Datagram servers.
  *
+ * Usually you use a Datragram Client to send UDP over the wire. UDP is connection-less which means you are not connected
+ * to the remote peer in a persistent way. Because of this you have to supply the address and port of the remote peer
+ * when sending data.
+ *
+ * You can send data to ipv4 or ipv6 addresses, which also include multicast addresses.
+ *
  */
 public interface DatagramClient extends DatagramSupport<DatagramClient> {
 }

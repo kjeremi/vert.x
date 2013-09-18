@@ -20,7 +20,7 @@ import org.vertx.java.core.buffer.Buffer;
 import java.net.InetSocketAddress;
 
 /**
- * A received Datagram packet (UDP).
+ * A received Datagram packet (UDP) which contains the data and information about the sender of the data itself.
  *
  * @author <a href="mailto:nmaurer@redhat.com">Norman Maurer</a>
  */
