@@ -20,7 +20,6 @@ import org.vertx.java.core.Handler;
 import org.vertx.java.core.streams.ExceptionSupport;
 
 import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
 
 
 
@@ -46,7 +45,7 @@ public interface DatagramServer extends DatagramSupport<DatagramServer>, Excepti
   DatagramServer listenMulticast(String multicastAddress, Handler<AsyncResult<DatagramServer>> handler);
 
   /**
-   * Joins a multicast group and so start listen for packets send to it on the given {@link NetworkInterface}.
+   * Joins a multicast group and so start listen for packets send to it on the given network interface.
    * The {@link Handler} is notified once the operation completes.
    *
    * @param   multicastAddress  the address of the multicast group to join
@@ -55,7 +54,7 @@ public interface DatagramServer extends DatagramSupport<DatagramServer>, Excepti
    * @return  this              returns itself for method-chaining
    */
   DatagramServer listenMulticast(
-          String multicastAddress, NetworkInterface networkInterface, String source, Handler<AsyncResult<DatagramServer>> handler);
+          String multicastAddress, String networkInterface, String source, Handler<AsyncResult<DatagramServer>> handler);
 
   /**
    * Leaves a multicast group and so stop listen for packets send to it.
@@ -69,7 +68,7 @@ public interface DatagramServer extends DatagramSupport<DatagramServer>, Excepti
 
 
   /**
-   * Leaves a multicast group and so stop listen for packets send to it on the given {@link NetworkInterface}.
+   * Leaves a multicast group and so stop listen for packets send to it on the given network interface.
    * The {@link Handler} is notified once the operation completes.
    *
    * @param   multicastAddress  the address of the multicast group to join
@@ -78,7 +77,7 @@ public interface DatagramServer extends DatagramSupport<DatagramServer>, Excepti
    * @return  this              returns itself for method-chaining
    */
   DatagramServer unlistenMulticast(
-          String multicastAddress, NetworkInterface networkInterface, String source,
+          String multicastAddress, String networkInterface, String source,
           Handler<AsyncResult<DatagramServer>> handler);
 
   /**
@@ -95,7 +94,7 @@ public interface DatagramServer extends DatagramSupport<DatagramServer>, Excepti
           String multicastAddress, String sourceToBlock, Handler<AsyncResult<DatagramServer>> handler);
 
   /**
-   * Block the given sourceToBlock address for the given multicastAddress on the given networkInterface and notifies
+   * Block the given sourceToBlock address for the given multicastAddress on the given network interface and notifies
    * the {@link Handler} once the operation completes.
    *
    * @param   multicastAddress  the address for which you want to block the sourceToBlock
@@ -106,7 +105,7 @@ public interface DatagramServer extends DatagramSupport<DatagramServer>, Excepti
    * @return  this              returns itself for method-chaining
    */
   DatagramServer blockMulticast(
-          String multicastAddress, NetworkInterface networkInterface,
+          String multicastAddress, String networkInterface,
           String sourceToBlock, Handler<AsyncResult<DatagramServer>> handler);
 
   /**
