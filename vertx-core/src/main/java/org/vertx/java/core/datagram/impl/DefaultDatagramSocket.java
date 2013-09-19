@@ -22,7 +22,6 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.datagram.*;
 import org.vertx.java.core.datagram.DatagramSocket;
 import org.vertx.java.core.impl.DefaultFutureResult;
 import org.vertx.java.core.impl.VertxInternal;
@@ -322,16 +321,24 @@ public class DefaultDatagramSocket extends ConnectionBase
   }
 
   @Override
-  public NetworkInterface getNetworkInterface() {
-    return channel().config().getNetworkInterface();
+  public String getNetworkInterface() {
+    NetworkInterface iface =  channel().config().getNetworkInterface();
+    if (iface == null) {
+      return null;
+    }
+    return iface.getName();
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public DatagramSocket setNetworkInterface(NetworkInterface iface) {
+  public DatagramSocket setNetworkInterface(String iface) {
     checkConfigurable();
 
-    channel().config().setNetworkInterface(iface);
+    try {
+      channel().config().setNetworkInterface(NetworkInterface.getByName(iface));
+    } catch (SocketException e) {
+      throw new IllegalArgumentException("Could not find network interface with name " + iface, e);
+    }
     return this;
   }
 

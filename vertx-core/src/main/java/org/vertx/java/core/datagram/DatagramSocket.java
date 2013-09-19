@@ -23,7 +23,6 @@ import org.vertx.java.core.streams.DrainSupport;
 import org.vertx.java.core.streams.ExceptionSupport;
 
 import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
 
 
 /**
@@ -117,12 +116,12 @@ public interface DatagramSocket extends DrainSupport<DatagramSocket>, NetworkSup
   /**
    * Gets the {@link java.net.StandardSocketOptions#IP_MULTICAST_IF} option.
    */
-  NetworkInterface getNetworkInterface();
+  String getNetworkInterface();
 
   /**
    * Sets the {@link java.net.StandardSocketOptions#IP_MULTICAST_IF} option.
    */
-  DatagramSocket setNetworkInterface(NetworkInterface networkInterface);
+  DatagramSocket setNetworkInterface(String networkinterface);
 
 
   /**

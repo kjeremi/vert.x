@@ -318,8 +318,8 @@ public class TestClient extends TestClientBase {
 
     tu.azzert(peer1.getNetworkInterface() == null);
     NetworkInterface iface = NetworkInterface.getNetworkInterfaces().nextElement();
-    peer1.setNetworkInterface(iface);
-    tu.azzert(peer1.getNetworkInterface().equals(iface));
+    peer1.setNetworkInterface(iface.getName());
+    tu.azzert(peer1.getNetworkInterface().equals(iface.getName()));
 
     tu.azzert(peer1.getReceiveBufferSize() != 1024);
     peer1.setReceiveBufferSize(1024);
@@ -356,7 +356,7 @@ public class TestClient extends TestClientBase {
     }
 
     try {
-      endpoint.setNetworkInterface(NetworkInterface.getNetworkInterfaces().nextElement());
+      endpoint.setNetworkInterface(NetworkInterface.getNetworkInterfaces().nextElement().getName());
       tu.azzert(false);
     } catch (IllegalStateException e) {
       // expected
