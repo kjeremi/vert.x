@@ -18,6 +18,7 @@ package org.vertx.java.core.datagram.impl;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.socket.*;
 import io.netty.channel.socket.DatagramPacket;
+import io.netty.channel.socket.InternetProtocolFamily;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.Handler;
@@ -38,7 +39,7 @@ public class DefaultDatagramSocket extends ConnectionBase
   private Handler<Void> drainHandler;
   protected boolean configurable = true;
   private Handler<org.vertx.java.core.datagram.DatagramPacket> dataHandler;
-  public DefaultDatagramSocket(VertxInternal vertx, StandardProtocolFamily family) {
+  public DefaultDatagramSocket(VertxInternal vertx, org.vertx.java.core.datagram.InternetProtocolFamily family) {
     super(vertx, createChannel(family), vertx.getOrCreateContext());
     context.getEventLoop().register(channel);
     channel.pipeline().addLast("handler", new DatagramServerHandler(this.vertx, this));
@@ -357,14 +358,14 @@ public class DefaultDatagramSocket extends ConnectionBase
     return (DatagramChannel) channel;
   }
 
-  private static NioDatagramChannel createChannel(StandardProtocolFamily family) {
+  private static NioDatagramChannel createChannel(org.vertx.java.core.datagram.InternetProtocolFamily family) {
     if (family == null) {
       return new NioDatagramChannel();
     }
     switch (family) {
-      case INET:
+      case IPv4:
         return new NioDatagramChannel(InternetProtocolFamily.IPv4);
-      case INET6:
+      case IPv6:
         return new NioDatagramChannel(InternetProtocolFamily.IPv6);
       default:
         return new NioDatagramChannel();

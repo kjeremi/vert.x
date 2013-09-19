@@ -22,10 +22,13 @@ import org.vertx.java.core.Handler;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.datagram.DatagramPacket;
 import org.vertx.java.core.datagram.DatagramSocket;
+import org.vertx.java.core.datagram.InternetProtocolFamily;
 import org.vertx.java.testframework.TestClientBase;
 import org.vertx.java.testframework.TestUtils;
 
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -406,7 +409,7 @@ public class TestClient extends TestClientBase {
     final String groupAddress = "230.0.0.1";
 
     peer1 = vertx.createDatagramSocket(null);
-    peer2 = vertx.createDatagramSocket(StandardProtocolFamily.INET);
+    peer2 = vertx.createDatagramSocket(InternetProtocolFamily.IPv4);
 
     peer2.dataHandler(new Handler<DatagramPacket>() {
       @Override

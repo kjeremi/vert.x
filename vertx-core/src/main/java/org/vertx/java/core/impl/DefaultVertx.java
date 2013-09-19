@@ -22,6 +22,7 @@ import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.Context;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.datagram.DatagramSocket;
+import org.vertx.java.core.datagram.InternetProtocolFamily;
 import org.vertx.java.core.datagram.impl.DefaultDatagramSocket;
 import org.vertx.java.core.dns.DnsClient;
 import org.vertx.java.core.dns.impl.DefaultDnsClient;
@@ -47,7 +48,6 @@ import org.vertx.java.core.sockjs.SockJSServer;
 import org.vertx.java.core.sockjs.impl.DefaultSockJSServer;
 
 import java.net.InetSocketAddress;
-import java.net.StandardProtocolFamily;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -100,7 +100,7 @@ public class DefaultVertx implements VertxInternal {
   }
 
   @Override
-  public DatagramSocket createDatagramSocket(StandardProtocolFamily family) {
+  public DatagramSocket createDatagramSocket(InternetProtocolFamily family) {
     return new DefaultDatagramSocket(this, family);
   }
 
