@@ -66,7 +66,6 @@ final class DatagramServerHandler extends VertxHandler<DefaultDatagramSocket> {
     }
   }
 
-
   @Override
   protected Object safeObject(Object msg) throws Exception {
     if (msg instanceof DatagramPacket) {

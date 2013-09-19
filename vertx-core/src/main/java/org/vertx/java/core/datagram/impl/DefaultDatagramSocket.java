@@ -43,6 +43,7 @@ public class DefaultDatagramSocket extends ConnectionBase
     super(vertx, createChannel(family), vertx.getOrCreateContext());
     context.getEventLoop().register(channel);
     channel.pipeline().addLast("handler", new DatagramServerHandler(this.vertx, this));
+    channel().config().setMaxMessagesPerRead(1);
   }
 
   @Override
@@ -168,7 +169,7 @@ public class DefaultDatagramSocket extends ConnectionBase
   @SuppressWarnings("unchecked")
   public DatagramSocket pause() {
     doPause();
-    return (DatagramSocket) this;
+    return this;
   }
 
   @SuppressWarnings("unchecked")

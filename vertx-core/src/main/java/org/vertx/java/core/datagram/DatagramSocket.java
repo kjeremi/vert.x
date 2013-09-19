@@ -20,7 +20,7 @@ import org.vertx.java.core.Handler;
 import org.vertx.java.core.NetworkSupport;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.streams.DrainSupport;
-import org.vertx.java.core.streams.ExceptionSupport;
+import org.vertx.java.core.streams.ReadSupport;
 
 import java.net.InetSocketAddress;
 
@@ -36,7 +36,7 @@ import java.net.InetSocketAddress;
  *
  * @author <a href="mailto:nmaurer@redhat.com">Norman Maurer</a>
  */
-public interface DatagramSocket extends DrainSupport<DatagramSocket>, NetworkSupport<DatagramSocket>, ExceptionSupport<DatagramSocket> {
+public interface DatagramSocket extends DrainSupport<DatagramSocket>, NetworkSupport<DatagramSocket>, ReadSupport<DatagramSocket, DatagramPacket> {
 
   /**
    * Write the given {@link org.vertx.java.core.buffer.Buffer} to the {@link java.net.InetSocketAddress}. The {@link org.vertx.java.core.Handler} will be notified once the
@@ -123,7 +123,6 @@ public interface DatagramSocket extends DrainSupport<DatagramSocket>, NetworkSup
    */
   DatagramSocket setMulticastNetworkInterface(String iface);
 
-
   /**
    * Close the {@link DatagramSocket} implementation asynchronous and notifies the handler once done.
    */
@@ -133,7 +132,6 @@ public interface DatagramSocket extends DrainSupport<DatagramSocket>, NetworkSup
    * Close the {@link DatagramSocket} implementation asynchronous.
    */
   void close();
-
 
   /**
    * Return the {@link InetSocketAddress} to which this {@link DatagramSocket} is bound too.
@@ -220,11 +218,6 @@ public interface DatagramSocket extends DrainSupport<DatagramSocket>, NetworkSup
   DatagramSocket blockMulticastGroup(
           String multicastAddress, String networkInterface,
           String sourceToBlock, Handler<AsyncResult<DatagramSocket>> handler);
-
-  /**
-   * Set a data handler. As data is read, the handler will be called with the data.
-   */
-  DatagramSocket dataHandler(Handler<DatagramPacket> packetHandler);
 
   /**
    * @see #listen(java.net.InetSocketAddress, org.vertx.java.core.Handler)
