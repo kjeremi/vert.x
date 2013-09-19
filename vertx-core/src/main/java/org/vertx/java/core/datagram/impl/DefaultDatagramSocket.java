@@ -46,7 +46,7 @@ public class DefaultDatagramSocket extends ConnectionBase
   }
 
   @Override
-  public DatagramSocket listenMulticast(String multicastAddress, Handler<AsyncResult<DatagramSocket>> handler) {
+  public DatagramSocket listenMulticastGroup(String multicastAddress, Handler<AsyncResult<DatagramSocket>> handler) {
     configurable = false;
     try {
       addListener(channel().joinGroup(InetAddress.getByName(multicastAddress)), handler);
@@ -57,7 +57,7 @@ public class DefaultDatagramSocket extends ConnectionBase
   }
 
   @Override
-  public DatagramSocket listenMulticast(String multicastAddress, String networkInterface, String source, Handler<AsyncResult<DatagramSocket>> handler) {
+  public DatagramSocket listenMulticastGroup(String multicastAddress, String networkInterface, String source, Handler<AsyncResult<DatagramSocket>> handler) {
     configurable = false;
     try {
       addListener(channel().joinGroup(InetAddress.getByName(multicastAddress),
@@ -69,7 +69,7 @@ public class DefaultDatagramSocket extends ConnectionBase
   }
 
   @Override
-  public DatagramSocket unlistenMulticast(String multicastAddress, Handler<AsyncResult<DatagramSocket>> handler) {
+  public DatagramSocket unlistenMulticastGroup(String multicastAddress, Handler<AsyncResult<DatagramSocket>> handler) {
     configurable = false;
     try {
       addListener(channel().leaveGroup(InetAddress.getByName(multicastAddress)), handler);
@@ -80,7 +80,7 @@ public class DefaultDatagramSocket extends ConnectionBase
   }
 
   @Override
-  public DatagramSocket unlistenMulticast(String multicastAddress, String networkInterface, String source, Handler<AsyncResult<DatagramSocket>> handler) {
+  public DatagramSocket unlistenMulticastGroup(String multicastAddress, String networkInterface, String source, Handler<AsyncResult<DatagramSocket>> handler) {
     configurable = false;
     try {
       addListener(channel().leaveGroup(InetAddress.getByName(multicastAddress),
@@ -92,7 +92,7 @@ public class DefaultDatagramSocket extends ConnectionBase
   }
 
   @Override
-  public DatagramSocket blockMulticast(String multicastAddress, String networkInterface, String sourceToBlock, Handler<AsyncResult<DatagramSocket>> handler) {
+  public DatagramSocket blockMulticastGroup(String multicastAddress, String networkInterface, String sourceToBlock, Handler<AsyncResult<DatagramSocket>> handler) {
     configurable = false;
     try {
       addListener(channel().block(InetAddress.getByName(multicastAddress),
@@ -104,7 +104,7 @@ public class DefaultDatagramSocket extends ConnectionBase
   }
 
   @Override
-  public DatagramSocket blockMulticast(String multicastAddress, String sourceToBlock, Handler<AsyncResult<DatagramSocket>> handler) {
+  public DatagramSocket blockMulticastGroup(String multicastAddress, String sourceToBlock, Handler<AsyncResult<DatagramSocket>> handler) {
     configurable = false;
     try {
       addListener(channel().block(InetAddress.getByName(multicastAddress), InetAddress.getByName(sourceToBlock)), handler);
@@ -294,13 +294,13 @@ public class DefaultDatagramSocket extends ConnectionBase
   }
 
   @Override
-  public boolean isLoopbackModeDisabled() {
+  public boolean isMulticastLoopbackMode() {
     return channel().config().isLoopbackModeDisabled();
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public DatagramSocket setLoopbackModeDisabled(boolean loopbackModeDisabled) {
+  public DatagramSocket setMulticastLoopbackMode(boolean loopbackModeDisabled) {
     checkConfigurable();
 
     channel().config().setLoopbackModeDisabled(loopbackModeDisabled);
@@ -308,13 +308,13 @@ public class DefaultDatagramSocket extends ConnectionBase
   }
 
   @Override
-  public int getTimeToLive() {
+  public int getMulticastTimeToLive() {
     return channel().config().getTimeToLive();
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  public DatagramSocket setTimeToLive(int ttl) {
+  public DatagramSocket setMulticastTimeToLive(int ttl) {
     checkConfigurable();
 
     channel().config().setTimeToLive(ttl);
@@ -322,7 +322,7 @@ public class DefaultDatagramSocket extends ConnectionBase
   }
 
   @Override
-  public String getNetworkInterface() {
+  public String getMulticastNetworkInterface() {
     NetworkInterface iface =  channel().config().getNetworkInterface();
     if (iface == null) {
       return null;
@@ -332,7 +332,7 @@ public class DefaultDatagramSocket extends ConnectionBase
 
   @Override
   @SuppressWarnings("unchecked")
-  public DatagramSocket setNetworkInterface(String iface) {
+  public DatagramSocket setMulticastNetworkInterface(String iface) {
     checkConfigurable();
 
     try {

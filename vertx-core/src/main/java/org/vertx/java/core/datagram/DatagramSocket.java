@@ -93,7 +93,7 @@ public interface DatagramSocket extends DrainSupport<DatagramSocket>, NetworkSup
    *
    * @return {@code true} if and only if the loopback mode has been disabled
    */
-  boolean isLoopbackModeDisabled();
+  boolean isMulticastLoopbackMode();
 
   /**
    * Sets the {@link java.net.StandardSocketOptions#IP_MULTICAST_LOOP} option.
@@ -101,27 +101,27 @@ public interface DatagramSocket extends DrainSupport<DatagramSocket>, NetworkSup
    * @param loopbackModeDisabled
    *        {@code true} if and only if the loopback mode has been disabled
    */
-  DatagramSocket setLoopbackModeDisabled(boolean loopbackModeDisabled);
+  DatagramSocket setMulticastLoopbackMode(boolean loopbackModeDisabled);
 
   /**
    * Gets the {@link java.net.StandardSocketOptions#IP_MULTICAST_TTL} option.
    */
-  int getTimeToLive();
+  int getMulticastTimeToLive();
 
   /**
    * Sets the {@link java.net.StandardSocketOptions#IP_MULTICAST_TTL} option.
    */
-  DatagramSocket setTimeToLive(int ttl);
+  DatagramSocket setMulticastTimeToLive(int ttl);
 
   /**
    * Gets the {@link java.net.StandardSocketOptions#IP_MULTICAST_IF} option.
    */
-  String getNetworkInterface();
+  String getMulticastNetworkInterface();
 
   /**
    * Sets the {@link java.net.StandardSocketOptions#IP_MULTICAST_IF} option.
    */
-  DatagramSocket setNetworkInterface(String networkinterface);
+  DatagramSocket setMulticastNetworkInterface(String iface);
 
 
   /**
@@ -143,15 +143,17 @@ public interface DatagramSocket extends DrainSupport<DatagramSocket>, NetworkSup
   /**
    * Joins a multicast group and so start listen for packets send to it. The {@link Handler} is notified once the operation completes.
    *
+   *
    * @param   multicastAddress  the address of the multicast group to join
    * @param   handler           then handler to notify once the operation completes
    * @return  this              returns itself for method-chaining
    */
-  DatagramSocket listenMulticast(String multicastAddress, Handler<AsyncResult<DatagramSocket>> handler);
+  DatagramSocket listenMulticastGroup(String multicastAddress, Handler<AsyncResult<DatagramSocket>> handler);
 
   /**
    * Joins a multicast group and so start listen for packets send to it on the given network interface.
    * The {@link Handler} is notified once the operation completes.
+   *
    *
    * @param   multicastAddress  the address of the multicast group to join
    * @param   networkInterface  the network interface on which to listen for packets.
@@ -159,23 +161,25 @@ public interface DatagramSocket extends DrainSupport<DatagramSocket>, NetworkSup
    * @param   handler           then handler to notify once the operation completes
    * @return  this              returns itself for method-chaining
    */
-  DatagramSocket listenMulticast(
+  DatagramSocket listenMulticastGroup(
           String multicastAddress, String networkInterface, String source, Handler<AsyncResult<DatagramSocket>> handler);
 
   /**
    * Leaves a multicast group and so stop listen for packets send to it.
    * The {@link Handler} is notified once the operation completes.
    *
+   *
    * @param   multicastAddress  the address of the multicast group to leave
    * @param   handler           then handler to notify once the operation completes
    * @return  this              returns itself for method-chaining
    */
-  DatagramSocket unlistenMulticast(String multicastAddress, Handler<AsyncResult<DatagramSocket>> handler);
+  DatagramSocket unlistenMulticastGroup(String multicastAddress, Handler<AsyncResult<DatagramSocket>> handler);
 
 
   /**
    * Leaves a multicast group and so stop listen for packets send to it on the given network interface.
    * The {@link Handler} is notified once the operation completes.
+   *
    *
    * @param   multicastAddress  the address of the multicast group to join
    * @param   networkInterface  the network interface on which to listen for packets.
@@ -183,7 +187,7 @@ public interface DatagramSocket extends DrainSupport<DatagramSocket>, NetworkSup
    * @param   handler           then handler to notify once the operation completes
    * @return  this              returns itself for method-chaining
    */
-  DatagramSocket unlistenMulticast(
+  DatagramSocket unlistenMulticastGroup(
           String multicastAddress, String networkInterface, String source,
           Handler<AsyncResult<DatagramSocket>> handler);
 
@@ -191,27 +195,29 @@ public interface DatagramSocket extends DrainSupport<DatagramSocket>, NetworkSup
    * Block the given sourceToBlock address for the given multicastAddress and notifies the {@link Handler} once
    * the operation completes.
    *
+   *
    * @param   multicastAddress  the address for which you want to block the sourceToBlock
    * @param   sourceToBlock     the source address which should be blocked. You will not receive an multicast packets
    *                            for it anymore.
    * @param   handler           then handler to notify once the operation completes
    * @return  this              returns itself for method-chaining
    */
-  DatagramSocket blockMulticast(
+  DatagramSocket blockMulticastGroup(
           String multicastAddress, String sourceToBlock, Handler<AsyncResult<DatagramSocket>> handler);
 
   /**
    * Block the given sourceToBlock address for the given multicastAddress on the given network interface and notifies
    * the {@link Handler} once the operation completes.
    *
+   *
    * @param   multicastAddress  the address for which you want to block the sourceToBlock
+   * @param   networkInterface  the network interface on which the blocking should accour.
    * @param   sourceToBlock     the source address which should be blocked. You will not receive an multicast packets
    *                            for it anymore.
-   * @param   networkInterface  the network interface on which the blocking should accour.
    * @param   handler           then handler to notify once the operation completes
    * @return  this              returns itself for method-chaining
    */
-  DatagramSocket blockMulticast(
+  DatagramSocket blockMulticastGroup(
           String multicastAddress, String networkInterface,
           String sourceToBlock, Handler<AsyncResult<DatagramSocket>> handler);
 

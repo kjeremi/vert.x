@@ -315,14 +315,14 @@ public class TestClient extends TestClientBase {
     peer1.setBroadcast(true);
     tu.azzert(peer1.isBroadcast());
 
-    tu.azzert(peer1.isLoopbackModeDisabled());
-    peer1.setLoopbackModeDisabled(false);
-    tu.azzert(!peer1.isLoopbackModeDisabled());
+    tu.azzert(peer1.isMulticastLoopbackMode());
+    peer1.setMulticastLoopbackMode(false);
+    tu.azzert(!peer1.isMulticastLoopbackMode());
 
-    tu.azzert(peer1.getNetworkInterface() == null);
+    tu.azzert(peer1.getMulticastNetworkInterface() == null);
     NetworkInterface iface = NetworkInterface.getNetworkInterfaces().nextElement();
-    peer1.setNetworkInterface(iface.getName());
-    tu.azzert(peer1.getNetworkInterface().equals(iface.getName()));
+    peer1.setMulticastNetworkInterface(iface.getName());
+    tu.azzert(peer1.getMulticastNetworkInterface().equals(iface.getName()));
 
     tu.azzert(peer1.getReceiveBufferSize() != 1024);
     peer1.setReceiveBufferSize(1024);
@@ -336,9 +336,9 @@ public class TestClient extends TestClientBase {
     peer1.setReuseAddress(true);
     tu.azzert(peer1.isReuseAddress());
 
-    tu.azzert(peer1.getTimeToLive() != 2);
-    peer1.setTimeToLive(2);
-    tu.azzert(peer1.getTimeToLive() == 2);
+    tu.azzert(peer1.getMulticastTimeToLive() != 2);
+    peer1.setMulticastTimeToLive(2);
+    tu.azzert(peer1.getMulticastTimeToLive() == 2);
 
     tu.testComplete();
   }
@@ -352,14 +352,14 @@ public class TestClient extends TestClientBase {
     }
 
     try {
-      endpoint.setLoopbackModeDisabled(true);
+      endpoint.setMulticastLoopbackMode(true);
       tu.azzert(false);
     } catch (IllegalStateException e) {
       // expected
     }
 
     try {
-      endpoint.setNetworkInterface(NetworkInterface.getNetworkInterfaces().nextElement().getName());
+      endpoint.setMulticastNetworkInterface(NetworkInterface.getNetworkInterfaces().nextElement().getName());
       tu.azzert(false);
     } catch (IllegalStateException e) {
       // expected
@@ -389,7 +389,7 @@ public class TestClient extends TestClientBase {
     }
 
     try {
-      endpoint.setTimeToLive(2);
+      endpoint.setMulticastTimeToLive(2);
       tu.azzert(false);
     } catch (IllegalStateException e) {
       // expected
@@ -426,7 +426,7 @@ public class TestClient extends TestClientBase {
         tu.azzert(event.succeeded());
 
 
-        peer2.listenMulticast(groupAddress, new AsyncResultHandler<DatagramSocket>() {
+        peer2.listenMulticastGroup(groupAddress, new AsyncResultHandler<DatagramSocket>() {
           @Override
           public void handle(AsyncResult<DatagramSocket> event) {
             tu.azzert(event.succeeded());
@@ -436,7 +436,7 @@ public class TestClient extends TestClientBase {
                 tu.azzert(event.succeeded());
 
                 // leave group
-                peer2.unlistenMulticast(groupAddress, new AsyncResultHandler<DatagramSocket>() {
+                peer2.unlistenMulticastGroup(groupAddress, new AsyncResultHandler<DatagramSocket>() {
                   @Override
                   public void handle(AsyncResult<DatagramSocket> event) {
                     tu.azzert(event.succeeded());
