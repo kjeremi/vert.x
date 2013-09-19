@@ -29,11 +29,11 @@ import java.util.HashMap;
 /**
  * @author <a href="mailto:nmaurer@redhat.com">Norman Maurer</a>
  */
-final class DatagramServerHandler extends VertxHandler<DefaultDatagramServer> {
-  private final DefaultDatagramServer server;
+final class DatagramServerHandler extends VertxHandler<DefaultDatagramSocket> {
+  private final DefaultDatagramSocket server;
 
-  DatagramServerHandler(VertxInternal vertx, DefaultDatagramServer server) {
-        super(vertx, new HashMap<Channel, DefaultDatagramServer>());
+  DatagramServerHandler(VertxInternal vertx, DefaultDatagramSocket server) {
+        super(vertx, new HashMap<Channel, DefaultDatagramSocket>());
     this.server = server;
   }
 
@@ -45,7 +45,7 @@ final class DatagramServerHandler extends VertxHandler<DefaultDatagramServer> {
 
   @SuppressWarnings("unchecked")
   @Override
-  protected void channelRead(DefaultDatagramServer server, DefaultContext context, ChannelHandlerContext chctx, Object msg) throws Exception {
+  protected void channelRead(DefaultDatagramSocket server, DefaultContext context, ChannelHandlerContext chctx, Object msg) throws Exception {
     server.handleMessage((org.vertx.java.core.datagram.DatagramPacket) msg);
   }
 

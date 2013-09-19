@@ -16,8 +16,7 @@
 
 package org.vertx.java.core;
 
-import org.vertx.java.core.datagram.DatagramClient;
-import org.vertx.java.core.datagram.DatagramServer;
+import org.vertx.java.core.datagram.DatagramSocket;
 import org.vertx.java.core.dns.DnsClient;
 import org.vertx.java.core.eventbus.EventBus;
 import org.vertx.java.core.file.FileSystem;
@@ -67,18 +66,13 @@ public interface Vertx {
   HttpClient createHttpClient();
 
   /**
-   * Create a new Datagram client
-   */
-  DatagramClient createDatagramClient();
-
-  /**
    * Create a new Datagram server.
    *
    * @param family  use {@link StandardProtocolFamily} to use for multicast. If {@code null} is used it's up to the
    *                operation system to detect it's default.
-   * @return server the created {@link DatagramServer}.
+   * @return socket the created {@link DatagramSocket}.
    */
-  DatagramServer createDatagramServer(StandardProtocolFamily family);
+  DatagramSocket createDatagramSocket(StandardProtocolFamily family);
 
   /**
    * Create a SockJS server that wraps an HTTP server

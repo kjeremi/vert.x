@@ -20,8 +20,8 @@ import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.AsyncResultHandler;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.datagram.*;
 import org.vertx.java.core.datagram.DatagramPacket;
+import org.vertx.java.core.datagram.DatagramSocket;
 import org.vertx.java.testframework.TestClientBase;
 import org.vertx.java.testframework.TestUtils;
 
@@ -32,21 +32,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author <a href="mailto:nmaurer@redhat.com">Norman Maurer</a>
  */
 public class TestClient extends TestClientBase {
-  private DatagramSupport peer1;
-  private DatagramServer peer2;
+  private DatagramSocket peer1;
+  private DatagramSocket peer2;
 
   public void testSendReceive() {
-    peer1 = vertx.createDatagramClient();
-    peer2 = vertx.createDatagramServer(null);
+    peer1 = vertx.createDatagramSocket(null);
+    peer2 = vertx.createDatagramSocket(null);
     peer2.exceptionHandler(new Handler<Throwable>() {
       @Override
       public void handle(Throwable event) {
         tu.azzert(false);
       }
     });
-    peer2.listen("127.0.0.1", 1234, new AsyncResultHandler<DatagramServer>() {
+    peer2.listen("127.0.0.1", 1234, new AsyncResultHandler<DatagramSocket>() {
       @Override
-      public void handle(AsyncResult<DatagramServer> event) {
+      public void handle(AsyncResult<DatagramSocket> event) {
         tu.checkThread();
         tu.azzert(event.succeeded());
         final Buffer buffer = TestUtils.generateRandomBuffer(128);
@@ -60,9 +60,9 @@ public class TestClient extends TestClientBase {
 
           }
         });
-        peer1.send(buffer, "127.0.0.1", 1234, new AsyncResultHandler<DatagramClient>() {
+        peer1.send(buffer, "127.0.0.1", 1234, new AsyncResultHandler<DatagramSocket>() {
           @Override
-          public void handle(AsyncResult<DatagramClient> event) {
+          public void handle(AsyncResult<DatagramSocket> event) {
             tu.checkThread();
             tu.azzert(event.succeeded());
           }
@@ -72,10 +72,10 @@ public class TestClient extends TestClientBase {
   }
 
   public void testListenHostPort() {
-    peer2 = vertx.createDatagramServer(null);
-    peer2.listen("127.0.0.1", 1234, new Handler<AsyncResult<DatagramServer>>() {
+    peer2 = vertx.createDatagramSocket(null);
+    peer2.listen("127.0.0.1", 1234, new Handler<AsyncResult<DatagramSocket>>() {
       @Override
-      public void handle(AsyncResult<DatagramServer> event) {
+      public void handle(AsyncResult<DatagramSocket> event) {
         tu.checkThread();
         tu.azzert(event.succeeded());
         tu.testComplete();
@@ -84,10 +84,10 @@ public class TestClient extends TestClientBase {
   }
 
   public void testListenPort() {
-    peer2 = vertx.createDatagramServer(null);
-    peer2.listen(1234, new Handler<AsyncResult<DatagramServer>>() {
+    peer2 = vertx.createDatagramSocket(null);
+    peer2.listen(1234, new Handler<AsyncResult<DatagramSocket>>() {
       @Override
-      public void handle(AsyncResult<DatagramServer> event) {
+      public void handle(AsyncResult<DatagramSocket> event) {
         tu.checkThread();
         tu.azzert(event.succeeded());
         tu.testComplete();
@@ -96,10 +96,10 @@ public class TestClient extends TestClientBase {
   }
 
   public void testListenInetSocketAddress() {
-    peer2 = vertx.createDatagramServer(null);
-    peer2.listen(new InetSocketAddress("127.0.0.1", 1234), new Handler<AsyncResult<DatagramServer>>() {
+    peer2 = vertx.createDatagramSocket(null);
+    peer2.listen(new InetSocketAddress("127.0.0.1", 1234), new Handler<AsyncResult<DatagramSocket>>() {
       @Override
-      public void handle(AsyncResult<DatagramServer> event) {
+      public void handle(AsyncResult<DatagramSocket> event) {
         tu.checkThread();
         tu.azzert(event.succeeded());
         tu.testComplete();
@@ -108,17 +108,16 @@ public class TestClient extends TestClientBase {
   }
 
   public void testListenSamePortMultipleTimes() {
-    peer2 = vertx.createDatagramServer(null);
-    peer1 = vertx.createDatagramServer(null);
-    final DatagramServer peer1 = (DatagramServer) this.peer1;
-    peer2.listen(1234, new Handler<AsyncResult<DatagramServer>>() {
+    peer2 = vertx.createDatagramSocket(null);
+    peer1 = vertx.createDatagramSocket(null);
+    peer2.listen(1234, new Handler<AsyncResult<DatagramSocket>>() {
       @Override
-      public void handle(AsyncResult<DatagramServer> event) {
+      public void handle(AsyncResult<DatagramSocket> event) {
         tu.checkThread();
         tu.azzert(event.succeeded());
-        peer1.listen(1234, new Handler<AsyncResult<DatagramServer>>() {
+        peer1.listen(1234, new Handler<AsyncResult<DatagramSocket>>() {
           @Override
-          public void handle(AsyncResult<DatagramServer> event) {
+          public void handle(AsyncResult<DatagramSocket> event) {
             tu.checkThread();
             tu.azzert(event.failed());
             tu.testComplete();
@@ -128,9 +127,8 @@ public class TestClient extends TestClientBase {
     });
   }
   public void testEcho() {
-    peer1 = vertx.createDatagramServer(null);
-    peer2 = vertx.createDatagramServer(null);
-    final DatagramServer peer1 = (DatagramServer) this.peer1;
+    peer1 = vertx.createDatagramSocket(null);
+    peer2 = vertx.createDatagramSocket(null);
     peer1.exceptionHandler(new Handler<Throwable>() {
       @Override
       public void handle(Throwable event) {
@@ -143,9 +141,9 @@ public class TestClient extends TestClientBase {
         tu.azzert(false);
       }
     });
-    peer2.listen("127.0.0.1", 1234, new AsyncResultHandler<DatagramServer>() {
+    peer2.listen("127.0.0.1", 1234, new AsyncResultHandler<DatagramSocket>() {
       @Override
-      public void handle(AsyncResult<DatagramServer> event) {
+      public void handle(AsyncResult<DatagramSocket> event) {
         tu.checkThread();
         tu.azzert(event.succeeded());
 
@@ -156,9 +154,9 @@ public class TestClient extends TestClientBase {
             tu.checkThread();
             tu.azzert(event.sender().equals(new InetSocketAddress("127.0.0.1", 1235)));
             tu.azzert(event.data().equals(buffer));
-            peer2.send(event.data(), "127.0.0.1", 1235, new AsyncResultHandler<DatagramServer>() {
+            peer2.send(event.data(), "127.0.0.1", 1235, new AsyncResultHandler<DatagramSocket>() {
               @Override
-              public void handle(AsyncResult<DatagramServer> event) {
+              public void handle(AsyncResult<DatagramSocket> event) {
                 tu.checkThread();
                 tu.azzert(event.succeeded());
               }
@@ -166,9 +164,9 @@ public class TestClient extends TestClientBase {
           }
         });
 
-        peer1.listen("127.0.0.1", 1235, new AsyncResultHandler<DatagramServer>() {
+        peer1.listen("127.0.0.1", 1235, new AsyncResultHandler<DatagramSocket>() {
           @Override
-          public void handle(AsyncResult<DatagramServer> event) {
+          public void handle(AsyncResult<DatagramSocket> event) {
 
             peer1.dataHandler(new Handler<DatagramPacket>() {
               @Override
@@ -180,9 +178,9 @@ public class TestClient extends TestClientBase {
               }
             });
 
-            peer1.send(buffer, "127.0.0.1", 1234, new AsyncResultHandler<DatagramServer>() {
+            peer1.send(buffer, "127.0.0.1", 1234, new AsyncResultHandler<DatagramSocket>() {
               @Override
-              public void handle(AsyncResult<DatagramServer> event) {
+              public void handle(AsyncResult<DatagramSocket> event) {
                 tu.checkThread();
                 tu.azzert(event.succeeded());
               }
@@ -194,23 +192,23 @@ public class TestClient extends TestClientBase {
   }
 
   public void testSendAfterCloseFails() {
-    peer1 = vertx.createDatagramClient();
-    peer2 = vertx.createDatagramServer(null);
+    peer1 = vertx.createDatagramSocket(null);
+    peer2 = vertx.createDatagramSocket(null);
     peer1.close(new AsyncResultHandler<Void>() {
       @Override
       public void handle(AsyncResult<Void> event) {
-        peer1.send("Test", "127.0.0.1", 1234, new AsyncResultHandler<DatagramClient>() {
+        peer1.send("Test", "127.0.0.1", 1234, new AsyncResultHandler<DatagramSocket>() {
           @Override
-          public void handle(AsyncResult<DatagramClient> event) {
+          public void handle(AsyncResult<DatagramSocket> event) {
             tu.azzert(event.failed());
             peer1 = null;
 
             peer2.close(new AsyncResultHandler<Void>() {
               @Override
               public void handle(AsyncResult<Void> event) {
-                peer2.send("Test", "127.0.0.1", 1234, new AsyncResultHandler<DatagramServer>() {
+                peer2.send("Test", "127.0.0.1", 1234, new AsyncResultHandler<DatagramSocket>() {
                   @Override
-                  public void handle(AsyncResult<DatagramServer> event) {
+                  public void handle(AsyncResult<DatagramSocket> event) {
                     tu.azzert(event.failed());
                     peer2 = null;
                     tu.testComplete();
@@ -225,8 +223,8 @@ public class TestClient extends TestClientBase {
   }
 
   public void testBroadcast() {
-    peer1 = vertx.createDatagramClient();
-    peer2 = vertx.createDatagramServer(null);
+    peer1 = vertx.createDatagramSocket(null);
+    peer2 = vertx.createDatagramSocket(null);
     peer2.exceptionHandler(new Handler<Throwable>() {
       @Override
       public void handle(Throwable event) {
@@ -236,9 +234,9 @@ public class TestClient extends TestClientBase {
     peer2.setBroadcast(true);
     peer1.setBroadcast(true);
 
-    peer2.listen(new InetSocketAddress(1234), new AsyncResultHandler<DatagramServer>() {
+    peer2.listen(new InetSocketAddress(1234), new AsyncResultHandler<DatagramSocket>() {
       @Override
-      public void handle(AsyncResult<DatagramServer> event) {
+      public void handle(AsyncResult<DatagramSocket> event) {
         tu.checkThread();
         tu.azzert(event.succeeded());
         final Buffer buffer = TestUtils.generateRandomBuffer(128);
@@ -252,9 +250,9 @@ public class TestClient extends TestClientBase {
 
           }
         });
-        peer1.send(buffer, "255.255.255.255", 1234, new AsyncResultHandler<DatagramClient>() {
+        peer1.send(buffer, "255.255.255.255", 1234, new AsyncResultHandler<DatagramSocket>() {
           @Override
-          public void handle(AsyncResult<DatagramClient> event) {
+          public void handle(AsyncResult<DatagramSocket> event) {
             tu.checkThread();
             tu.azzert(event.succeeded());
           }
@@ -264,10 +262,10 @@ public class TestClient extends TestClientBase {
   }
 
   public void testBroadcastFailsIfNotConfigured() {
-    peer1 = vertx.createDatagramClient();
-    peer1.send("test", "255.255.255.255", 1234, new AsyncResultHandler<DatagramClient>() {
+    peer1 = vertx.createDatagramSocket(null);
+    peer1.send("test", "255.255.255.255", 1234, new AsyncResultHandler<DatagramSocket>() {
       @Override
-      public void handle(AsyncResult<DatagramClient> event) {
+      public void handle(AsyncResult<DatagramSocket> event) {
         tu.checkThread();
         tu.azzert(event.failed());
         tu.testComplete();
@@ -277,72 +275,72 @@ public class TestClient extends TestClientBase {
 
 
   public void testConfigureAfterSendString() {
-    peer1 = vertx.createDatagramClient();
+    peer1 = vertx.createDatagramSocket(null);
     peer1.send("test", "127.0.0.1", 1234, null);
     checkConfigure(peer1);
     peer1.close();
   }
 
   public void testConfigureAfterSendStringWithEnc() {
-    peer1 = vertx.createDatagramClient();
+    peer1 = vertx.createDatagramSocket(null);
     peer1.send("test", "UTF-8", "127.0.0.1", 1234, null);
     checkConfigure(peer1);
   }
 
   public void testConfigureAfterSendBuffer() {
-    peer1 = vertx.createDatagramClient();
+    peer1 = vertx.createDatagramSocket(null);
     peer1.send(TestUtils.generateRandomBuffer(64), "127.0.0.1", 1234, null);
     checkConfigure(peer1);
   }
 
   public void testConfigureAfterListen() {
-    peer2 = vertx.createDatagramServer(null);
-    peer2.listen("127.0.0.1", 1234, null);
-    checkConfigure(peer2);
+    peer1 = vertx.createDatagramSocket(null);
+    peer1.listen("127.0.0.1", 1234, null);
+    checkConfigure(peer1);
   }
 
   public void testConfigureAfterListenWithInetSocketAddress() {
-    peer2 = vertx.createDatagramServer(null);
-    peer2.listen(new InetSocketAddress("127.0.0.1", 1234), null);
-    checkConfigure(peer2);
+    peer1 = vertx.createDatagramSocket(null);
+    peer1.listen(new InetSocketAddress("127.0.0.1", 1234), null);
+    checkConfigure(peer1);
   }
 
   public void testConfigure() throws Exception {
-    peer2 = vertx.createDatagramServer(null);
+    peer1 = vertx.createDatagramSocket(null);
 
-    tu.azzert(!peer2.isBroadcast());
-    peer2.setBroadcast(true);
-    tu.azzert(peer2.isBroadcast());
+    tu.azzert(!peer1.isBroadcast());
+    peer1.setBroadcast(true);
+    tu.azzert(peer1.isBroadcast());
 
-    tu.azzert(peer2.isLoopbackModeDisabled());
-    peer2.setLoopbackModeDisabled(false);
-    tu.azzert(!peer2.isLoopbackModeDisabled());
+    tu.azzert(peer1.isLoopbackModeDisabled());
+    peer1.setLoopbackModeDisabled(false);
+    tu.azzert(!peer1.isLoopbackModeDisabled());
 
-    tu.azzert(peer2.getNetworkInterface() == null);
+    tu.azzert(peer1.getNetworkInterface() == null);
     NetworkInterface iface = NetworkInterface.getNetworkInterfaces().nextElement();
-    peer2.setNetworkInterface(iface);
-    tu.azzert(peer2.getNetworkInterface().equals(iface));
+    peer1.setNetworkInterface(iface);
+    tu.azzert(peer1.getNetworkInterface().equals(iface));
 
-    tu.azzert(peer2.getReceiveBufferSize() != 1024);
-    peer2.setReceiveBufferSize(1024);
-    tu.azzert(peer2.getReceiveBufferSize() == 1024);
+    tu.azzert(peer1.getReceiveBufferSize() != 1024);
+    peer1.setReceiveBufferSize(1024);
+    tu.azzert(peer1.getReceiveBufferSize() == 1024);
 
-    tu.azzert(peer2.getSendBufferSize() != 1024);
-    peer2.setSendBufferSize(1024);                                                                                              p ,
-    tu.azzert(peer2.getSendBufferSize() == 1024);
+    tu.azzert(peer1.getSendBufferSize() != 1024);
+    peer1.setSendBufferSize(1024);
+    tu.azzert(peer1.getSendBufferSize() == 1024);
 
-    tu.azzert(!peer2.isReuseAddress());
-    peer2.setReuseAddress(true);
-    tu.azzert(peer2.isReuseAddress());
+    tu.azzert(!peer1.isReuseAddress());
+    peer1.setReuseAddress(true);
+    tu.azzert(peer1.isReuseAddress());
 
-    tu.azzert(peer2.getTimeToLive() != 2);
-    peer2.setTimeToLive(2);
-    tu.azzert(peer2.getTimeToLive() == 2);
+    tu.azzert(peer1.getTimeToLive() != 2);
+    peer1.setTimeToLive(2);
+    tu.azzert(peer1.getTimeToLive() == 2);
 
     tu.testComplete();
   }
 
-  private void checkConfigure(DatagramSupport endpoint)  {
+  private void checkConfigure(DatagramSocket endpoint)  {
     try {
       endpoint.setBroadcast(true);
       tu.azzert(false);
@@ -407,9 +405,8 @@ public class TestClient extends TestClientBase {
     final Buffer buffer = TestUtils.generateRandomBuffer(128);
     final String groupAddress = "230.0.0.1";
 
-    peer1 = vertx.createDatagramClient();
-    final DatagramClient peer1 = (DatagramClient) this.peer1;
-    peer2 = vertx.createDatagramServer(StandardProtocolFamily.INET);
+    peer1 = vertx.createDatagramSocket(null);
+    peer2 = vertx.createDatagramSocket(StandardProtocolFamily.INET);
 
     peer2.dataHandler(new Handler<DatagramPacket>() {
       @Override
@@ -419,26 +416,26 @@ public class TestClient extends TestClientBase {
       }
     });
 
-    peer2.listen("127.0.0.1", 1234, new AsyncResultHandler<DatagramServer>() {
+    peer2.listen("127.0.0.1", 1234, new AsyncResultHandler<DatagramSocket>() {
       @Override
-      public void handle(AsyncResult<DatagramServer> event) {
+      public void handle(AsyncResult<DatagramSocket> event) {
         tu.checkThread();
         tu.azzert(event.succeeded());
 
 
-        peer2.listenMulticast(groupAddress, new AsyncResultHandler<DatagramServer>() {
+        peer2.listenMulticast(groupAddress, new AsyncResultHandler<DatagramSocket>() {
           @Override
-          public void handle(AsyncResult<DatagramServer> event) {
+          public void handle(AsyncResult<DatagramSocket> event) {
             tu.azzert(event.succeeded());
-            peer1.send(buffer, groupAddress, 1234, new AsyncResultHandler<DatagramClient>() {
+            peer1.send(buffer, groupAddress, 1234, new AsyncResultHandler<DatagramSocket>() {
               @Override
-              public void handle(AsyncResult<DatagramClient> event) {
+              public void handle(AsyncResult<DatagramSocket> event) {
                 tu.azzert(event.succeeded());
 
                 // leave group
-                peer2.unlistenMulticast(groupAddress, new AsyncResultHandler<DatagramServer>() {
+                peer2.unlistenMulticast(groupAddress, new AsyncResultHandler<DatagramSocket>() {
                   @Override
-                  public void handle(AsyncResult<DatagramServer> event) {
+                  public void handle(AsyncResult<DatagramSocket> event) {
                     tu.azzert(event.succeeded());
 
                     final AtomicBoolean received = new AtomicBoolean(false);
@@ -449,9 +446,9 @@ public class TestClient extends TestClientBase {
                         received.set(true);
                       }
                     });
-                    peer1.send(buffer, groupAddress, 1234, new AsyncResultHandler<DatagramClient>() {
+                    peer1.send(buffer, groupAddress, 1234, new AsyncResultHandler<DatagramSocket>() {
                       @Override
-                      public void handle(AsyncResult<DatagramClient> event) {
+                      public void handle(AsyncResult<DatagramSocket> event) {
                         tu.azzert(event.succeeded());
 
                         // schedule a timer which will check in 1 second if we received a message after the group
