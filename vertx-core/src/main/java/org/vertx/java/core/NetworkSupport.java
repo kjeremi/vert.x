@@ -17,6 +17,7 @@ package org.vertx.java.core;
 
 
 /**
+ * Offers methods that can be used to configure a service that provide network services.
  *
  * @author <a href="mailto:nmaurer@redhat.com">Norman Maurer</a>
  */
@@ -67,6 +68,5 @@ public interface NetworkSupport<T> {
    * @return the value of traffic class
    */
   int getTrafficClass();
-
 
 }

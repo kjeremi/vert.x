@@ -66,7 +66,7 @@ public interface Vertx {
   HttpClient createHttpClient();
 
   /**
-   * Create a new Datagram server.
+   * Create a new {@link DatagramSocket}.
    *
    * @param family  use {@link InternetProtocolFamily} to use for multicast. If {@code null} is used it's up to the
    *                operation system to detect it's default.
