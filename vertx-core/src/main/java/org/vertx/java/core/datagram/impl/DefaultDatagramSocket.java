@@ -16,6 +16,7 @@
 package org.vertx.java.core.datagram.impl;
 
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.*;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.InternetProtocolFamily;
@@ -41,6 +42,7 @@ public class DefaultDatagramSocket extends ConnectionBase
   private Handler<org.vertx.java.core.datagram.DatagramPacket> dataHandler;
   public DefaultDatagramSocket(VertxInternal vertx, org.vertx.java.core.datagram.InternetProtocolFamily family) {
     super(vertx, createChannel(family), vertx.getOrCreateContext());
+    channel().config().setOption(ChannelOption.DATAGRAM_CHANNEL_ACTIVE_ON_REGISTRATION, true);
     context.getEventLoop().register(channel);
     channel.pipeline().addLast("handler", new DatagramServerHandler(this.vertx, this));
     channel().config().setMaxMessagesPerRead(1);
