@@ -58,6 +58,8 @@ public class DefaultHttpClient implements HttpClient {
   private Handler<Throwable> exceptionHandler;
   private int port = 80;
   private String host = "localhost";
+  private String ip = "127.0.0.1";
+  
   private final HttpPool pool = new PriorityHttpConnectionPool()  {
     protected void connect(Handler<ClientConnection> connectHandler, Handler<Throwable> connectErrorHandler, DefaultContext context) {
       internalConnect(connectHandler, connectErrorHandler);
@@ -543,7 +545,13 @@ public class DefaultHttpClient implements HttpClient {
       });
     }
     tcpHelper.applyConnectionOptions(bootstrap);
-    ChannelFuture future = bootstrap.connect(new InetSocketAddress(host, port));
+    ChannelFuture future;
+    if ("127.0.0.1".equals(ip) && !"localhost".equalsIgnoreCase(host)){
+    	 future = bootstrap.connect(new InetSocketAddress(host, port));
+    }else {
+    	 future = bootstrap.connect(new InetSocketAddress(host, port));
+    }
+    
     future.addListener(new ChannelFutureListener() {
       public void operationComplete(ChannelFuture channelFuture) throws Exception {
         final Channel ch = channelFuture.channel();
@@ -704,4 +712,13 @@ public class DefaultHttpClient implements HttpClient {
     close();
     super.finalize();
   }
+
+public String getIp() {
+	return ip;
+}
+
+public HttpClient setIp(String ip) {
+	this.ip = ip;
+	return this;
+}
 }

@@ -91,6 +91,10 @@ public interface HttpClient extends ClientSSLSupport<HttpClient>, TCPSupport<Htt
    * @return A reference to this, so multiple invocations can be chained together.
    */
   HttpClient setHost(String host);
+  
+  HttpClient setIp(String ip);
+  
+  String getIp();
 
   /**
    *
